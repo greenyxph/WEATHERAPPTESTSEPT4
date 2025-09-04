@@ -61,18 +61,19 @@
     }
 
     .day-card {
-      flex: 1 1 140px;
-      max-width: 140px;
+      flex: 1 1 100px;
+      max-width: 100px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 10px;
+      border-radius: 6px;
+      padding: 8px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      font-size: 14px;
     }
 
     .day-card i {
-      font-size: 36px;
-      margin: 5px 0;
+      font-size: 28px;
+      margin: 4px 0;
     }
 
     @media (max-width: 480px) {
@@ -135,23 +136,23 @@
     };
 
     const iconColors = {
-      '01d': '#FFD700',
-      '01n': '#ADD8E6',
-      '02d': '#F0E68C',
+      '01d': '#FFD700', // sunny
+      '01n': '#ADD8E6', // clear night
+      '02d': '#F0E68C', // partly cloudy
       '02n': '#B0C4DE',
-      '03d': '#D3D3D3',
+      '03d': '#D3D3D3', // cloud
       '03n': '#D3D3D3',
-      '04d': '#A9A9A9',
+      '04d': '#A9A9A9', // cloudy
       '04n': '#A9A9A9',
-      '09d': '#708090',
+      '09d': '#708090', // showers
       '09n': '#708090',
-      '10d': '#4682B4',
+      '10d': '#4682B4', // rain
       '10n': '#4682B4',
-      '11d': '#800000',
+      '11d': '#800000', // thunderstorm
       '11n': '#800000',
-      '13d': '#FFFFFF',
+      '13d': '#FFFFFF', // snow
       '13n': '#FFFFFF',
-      '50d': '#C0C0C0',
+      '50d': '#C0C0C0', // fog
       '50n': '#C0C0C0'
     };
 
