@@ -114,9 +114,7 @@
     </div>
 
     <h2>5-Day Forecast</h2>
-    <div class="daily-scroll" id="daily-forecast">
-      <!-- Daily cards will be injected here -->
-    </div>
+    <div class="daily-scroll" id="daily-forecast"></div>
 
     <iframe src="https://embed.windy.com/embed.html?lat=15.0&lon=120.9&zoom=7" width="100%" height="400"></iframe>
   </div>
@@ -127,45 +125,27 @@
     const lon = 120.6938;
 
     const iconMap = {
-      '01d': 'wi-day-sunny',
-      '01n': 'wi-night-clear',
-      '02d': 'wi-day-cloudy',
-      '02n': 'wi-night-alt-cloudy',
-      '03d': 'wi-cloud',
-      '03n': 'wi-cloud',
-      '04d': 'wi-cloudy',
-      '04n': 'wi-cloudy',
-      '09d': 'wi-showers',
-      '09n': 'wi-showers',
-      '10d': 'wi-day-rain',
-      '10n': 'wi-night-alt-rain',
-      '11d': 'wi-thunderstorm',
-      '11n': 'wi-thunderstorm',
-      '13d': 'wi-snow',
-      '13n': 'wi-snow',
-      '50d': 'wi-fog',
-      '50n': 'wi-fog'
+      '01d': 'wi-day-sunny', '01n': 'wi-night-clear',
+      '02d': 'wi-day-cloudy', '02n': 'wi-night-alt-cloudy',
+      '03d': 'wi-cloud', '03n': 'wi-cloud',
+      '04d': 'wi-cloudy', '04n': 'wi-cloudy',
+      '09d': 'wi-showers', '09n': 'wi-showers',
+      '10d': 'wi-day-rain', '10n': 'wi-night-alt-rain',
+      '11d': 'wi-thunderstorm', '11n': 'wi-thunderstorm',
+      '13d': 'wi-snow', '13n': 'wi-snow',
+      '50d': 'wi-fog', '50n': 'wi-fog'
     };
 
     const iconColors = {
-      '01d': '#FFD700',
-      '01n': '#ADD8E6',
-      '02d': '#F0E68C',
-      '02n': '#B0C4DE',
-      '03d': '#D3D3D3',
-      '03n': '#D3D3D3',
-      '04d': '#A9A9A9',
-      '04n': '#A9A9A9',
-      '09d': '#708090',
-      '09n': '#708090',
-      '10d': '#4682B4',
-      '10n': '#4682B4',
-      '11d': '#800000',
-      '11n': '#800000',
-      '13d': '#FFFFFF',
-      '13n': '#FFFFFF',
-      '50d': '#C0C0C0',
-      '50n': '#C0C0C0'
+      '01d': '#FFD700', '01n': '#ADD8E6',
+      '02d': '#F0E68C', '02n': '#B0C4DE',
+      '03d': '#D3D3D3', '03n': '#D3D3D3',
+      '04d': '#A9A9A9', '04n': '#A9A9A9',
+      '09d': '#708090', '09n': '#708090',
+      '10d': '#4682B4', '10n': '#4682B4',
+      '11d': '#800000', '11n': '#800000',
+      '13d': '#FFFFFF', '13n': '#FFFFFF',
+      '50d': '#C0C0C0', '50n': '#C0C0C0'
     };
 
     const lottieMap = {
@@ -201,17 +181,13 @@
       container.innerHTML = '';
 
       const days = {};
-      
+
       data.list.forEach(entry => {
         const date = new Date(entry.dt * 1000);
         const day = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 
         if (!days[day]) {
-          days[day] = {
-            temp: [],
-            icons: [],
-            descriptions: []
-          };
+          days[day] = { temp: [], icons: [], descriptions: [] };
         }
 
         days[day].temp.push(entry.main.temp);
@@ -230,18 +206,19 @@
         const card = document.createElement('div');
         card.className = 'day-card';
         card.innerHTML = `
+          <h4>${day}</h
           <h4>${day}</h4>
-          ${lottieSrc ? `<lottie-player src="${lottieSrc}" background="transparent" speed="1" loop autoplay></lottie-player>` : ''}
-          <i class="wi ${iconClass}" style="color:${iconColor}"></i>
-          <p>${avgTemp}°C</p>
-          <p>${description}</p>
-        `;
-        container.appendChild(card);
-      });
-    }
+        ${lottieSrc ? `<lottie-player src="${lottieSrc}" background="transparent" speed="1" loop autoplay></lottie-player>` : ''}
+        <i class="wi ${iconClass}" style="color:${iconColor}"></i>
+        <p>${avgTemp}°C</p>
+        <p>${description}</p>
+      `;
+      container.appendChild(card);
+    });
+  }
 
-    fetchWeather();
-    fetchDailyForecast();
-  </script>
+  fetchWeather();
+  fetchDailyForecast();
+</script>
 </body>
 </html>
