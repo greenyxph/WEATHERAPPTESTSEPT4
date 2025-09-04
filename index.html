@@ -201,6 +201,7 @@
       container.innerHTML = '';
 
       const days = {};
+      
       data.list.forEach(entry => {
         const date = new Date(entry.dt * 1000);
         const day = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
