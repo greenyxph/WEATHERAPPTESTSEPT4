@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Check</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #1e3c72, #2a5298);
+      color: #fff;
+      animation: gradientShift 20s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .weather-icon {
+      font-size: 48px;
+      margin: 10px 0;
+    }
+
+    .temp {
+      font-size: 48px;
+      font-weight: 200;
+    }
+
+    .description {
+      font-size: 20px;
+      font-style: italic;
+    }
+
+    .details {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .daily-scroll {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 0;
+    }
+
+    .day-card {
+      flex: 1 1 140px;
+      max-width: 140px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .day-card i {
+      font-size: 36px;
+      margin: 5px 0;
+    }
+
+    @media (max-width: 480px) {
+      .day-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+    }
+
+    iframe {
+      border: none;
+      margin-top: 20px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather Check</h1>
+    <div class="weather-icon"><i class="wi wi-day-sunny" id="main-icon"></i></div>
+    <div class="temp" id="temperature">Loading...</div>
+    <div class="description" id="description">Loading description...</div>
+    <div class="details">
+      <p>Humidity: <span id="humidity">--</span>%</p>
+      <p>Wind: <span id="wind">--</span> km/h</p>
+    </div>
+
+    <h2>5-Day Forecast</h2>
+    <div class="daily-scroll" id="daily-forecast">
+      <!-- Daily cards will be injected here -->
+    </div>
+
+    <iframe src="https://embed.windy.com/embed.html?lat=15.0&lon=120.9&zoom=7" width="100%" height="400"></iframe>
+  </div>
+
+  <script>
+    const apiKey = 'b628f02897fc7f24a3175118197ab994';
+    const lat = 15.0283;
+    const lon = 120.6938;
+
+    const iconMap = {
+      '01d': 'wi-day-sunny',
+      '01n': 'wi-night-clear',
+      '02d': 'wi-day-cloudy',
+      '02n': 'wi-night-alt-cloudy',
+      '03d': 'wi-cloud',
+      '03n': 'wi-cloud',
+      '04d': 'wi-cloudy',
+      '04n': 'wi-cloudy',
+      '09d': 'wi-showers',
+      '09n': 'wi-showers',
+      '10d': 'wi-day-rain',
+      '10n': 'wi-night-alt-rain',
+      '11d': 'wi-thunderstorm',
+      '11n': 'wi-thunderstorm',
+      '13d': 'wi-snow',
+      '13n': 'wi-snow',
+      '50d': 'wi-fog',
+      '50n': 'wi-fog'
+    };
+
+    const iconColors = {
+      '01d': '#FFD700',
+      '01n': '#ADD8E6',
+      '02d': '#F0E68C',
+      '02n': '#B0C4DE',
+      '03d': '#D3D3D3',
+      '03n': '#D3D3D3',
+      '04d': '#A9A9A9',
+      '04n': '#A9A9A9',
+      '09d': '#708090',
+      '09n': '#708090',
+      '10d': '#4682B4',
+      '10n': '#4682B4',
+      '11d': '#800000',
+      '11n': '#800000',
+      '13d': '#FFFFFF',
+      '13n': '#FFFFFF',
+      '50d': '#C0C0C0',
+      '50n': '#C0C0C0'
+    };
+
+    async function fetchWeather() {
+      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`);
+      const data = await res.json();
+
+      document.getElementById('temperature').textContent = `${Math.round(data.main.temp)}°C`;
+      document.getElementById('description').textContent = data.weather[0].description;
+      document.getElementById('humidity').textContent = data.main.humidity;
+      document.getElementById('wind').textContent = data.wind.speed;
+
+      const iconCode = data.weather[0].icon;
+      const iconClass = iconMap[iconCode] || 'wi-na';
+      const iconColor = iconColors[iconCode] || '#fff';
+
+      const iconElement = document.getElementById('main-icon');
+      iconElement.className = `wi ${iconClass}`;
+      iconElement.style.color = iconColor;
+    }
+
+    async function fetchDailyForecast() {
+      const res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`);
+      const data = await res.json();
+      const container = document.getElementById('daily-forecast');
+      container.innerHTML = '';
+
+      const days = {};
+
+      data.list.forEach(entry => {
+        const date = new Date(entry.dt * 1000);
+        const day = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+
+        if (!days[day]) {
+          days[day] = {
+            temp: [],
+            icons: [],
+            descriptions: []
+          };
+        }
+
+        days[day].temp.push(entry.main.temp);
+        days[day].icons.push(entry.weather[0].icon);
+        days[day].descriptions.push(entry.weather[0].description);
+      });
+
+      Object.entries(days).slice(0, 5).forEach(([day, info]) => {
+        const avgTemp = Math.round(info.temp.reduce((a, b) => a + b) / info.temp.length);
+        const iconCode = info.icons[Math.floor(info.icons.length / 2)];
+        const description = info.descriptions[Math.floor(info.descriptions.length / 2)];
+        const iconClass = iconMap[iconCode] || 'wi-na';
+        const iconColor = iconColors[iconCode] || '#fff';
+
+        const card = document.createElement('div');
+        card.className = 'day-card';
+        card.innerHTML = `
+          <h4>${day}</h4>
+          <i class="wi ${iconClass}" style="color:${iconColor}"></i>
+          <p>${avgTemp}°C</p>
+          <p>${description}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    fetchWeather();
+    fetchDailyForecast();
+  </script>
+</body>
+</html>
