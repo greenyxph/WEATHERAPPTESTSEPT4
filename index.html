@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Weather Check</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css" />
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <style>
     body {
       margin: 0;
@@ -69,11 +70,22 @@
       text-align: center;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
       font-size: 14px;
+      position: relative;
     }
 
     .day-card i {
       font-size: 28px;
       margin: 4px 0;
+    }
+
+    .day-card lottie-player {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
     }
 
     @media (max-width: 480px) {
@@ -136,24 +148,32 @@
     };
 
     const iconColors = {
-      '01d': '#FFD700', // sunny
-      '01n': '#ADD8E6', // clear night
-      '02d': '#F0E68C', // partly cloudy
+      '01d': '#FFD700',
+      '01n': '#ADD8E6',
+      '02d': '#F0E68C',
       '02n': '#B0C4DE',
-      '03d': '#D3D3D3', // cloud
+      '03d': '#D3D3D3',
       '03n': '#D3D3D3',
-      '04d': '#A9A9A9', // cloudy
+      '04d': '#A9A9A9',
       '04n': '#A9A9A9',
-      '09d': '#708090', // showers
+      '09d': '#708090',
       '09n': '#708090',
-      '10d': '#4682B4', // rain
+      '10d': '#4682B4',
       '10n': '#4682B4',
-      '11d': '#800000', // thunderstorm
+      '11d': '#800000',
       '11n': '#800000',
-      '13d': '#FFFFFF', // snow
+      '13d': '#FFFFFF',
       '13n': '#FFFFFF',
-      '50d': '#C0C0C0', // fog
+      '50d': '#C0C0C0',
       '50n': '#C0C0C0'
+    };
+
+    const lottieMap = {
+      '01d': 'https://assets10.lottiefiles.com/packages/lf20_sunny.json',
+      '10d': 'https://assets10.lottiefiles.com/packages/lf20_rainy.json',
+      '13d': 'https://assets10.lottiefiles.com/packages/lf20_snowy.json',
+      '11d': 'https://assets10.lottiefiles.com/packages/lf20_thunder.json',
+      '50d': 'https://assets10.lottiefiles.com/packages/lf20_foggy.json'
     };
 
     async function fetchWeather() {
@@ -181,7 +201,6 @@
       container.innerHTML = '';
 
       const days = {};
-
       data.list.forEach(entry => {
         const date = new Date(entry.dt * 1000);
         const day = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
@@ -205,11 +224,13 @@
         const description = info.descriptions[Math.floor(info.descriptions.length / 2)];
         const iconClass = iconMap[iconCode] || 'wi-na';
         const iconColor = iconColors[iconCode] || '#fff';
+        const lottieSrc = lottieMap[iconCode];
 
         const card = document.createElement('div');
         card.className = 'day-card';
         card.innerHTML = `
           <h4>${day}</h4>
+          ${lottieSrc ? `<lottie-player src="${lottieSrc}" background="transparent" speed="1" loop autoplay></lottie-player>` : ''}
           <i class="wi ${iconClass}" style="color:${iconColor}"></i>
           <p>${avgTemp}°C</p>
           <p>${description}</p>
